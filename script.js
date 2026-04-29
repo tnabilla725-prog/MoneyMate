@@ -327,7 +327,8 @@ document.getElementById('form-transaksi').addEventListener('submit', (e) => {
   e.preventDefault();
 
   const jenis    = document.getElementById('jenis').value;
-  const jumlah   = parseFloat(document.getElementById('jumlah').value);
+  // Kalikan 1000: user input "100" → tersimpan sebagai 100.000
+  const jumlah   = parseFloat(document.getElementById('jumlah').value) * 1000;
   const kategori = document.getElementById('kategori').value;
   const tanggal  = document.getElementById('tanggal').value;
   const catatan  = document.getElementById('catatan').value.trim();
