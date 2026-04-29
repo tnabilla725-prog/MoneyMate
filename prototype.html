@@ -1,0 +1,621 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>MoneyMate — Prototype</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* ===== BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      min-height: 100vh;
+      padding: 40px 16px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ===== HEADER ===== */
+    .proto-header { text-align: center; margin-bottom: 56px; }
+    .badge {
+      display: inline-block;
+      background: #F4A261; color: #fff;
+      font-size: 0.68rem; font-weight: 700;
+      padding: 4px 14px; border-radius: 100px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .proto-header h1 { font-size: 2.4rem; font-weight: 700; }
+    .proto-header h1 span { color: #F4A261; }
+    .proto-header p { font-size: 0.88rem; color: #666; margin-top: 8px; }
+    .btn-launch {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 22px; padding: 13px 30px;
+      background: linear-gradient(135deg, #1F6F78, #2E8A99);
+      color: #fff; border-radius: 14px; text-decoration: none;
+      font-size: 0.9rem; font-weight: 600;
+      box-shadow: 0 4px 20px rgba(31,111,120,0.4);
+      transition: all 0.2s;
+    }
+    .btn-launch:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(31,111,120,0.5); }
+
+    /* ===== SECTION LABEL ===== */
+    .sec-label {
+      width: 100%; max-width: 980px;
+      font-size: 0.7rem; font-weight: 700; color: #444;
+      text-transform: uppercase; letter-spacing: 2px;
+      margin: 48px 0 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: #1e1e1e; }
+
+    /* ===== PHONE FRAME ===== */
+    .frames { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 980px; }
+    .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .phone-lbl { font-size: 0.72rem; color: #555; font-weight: 500; }
+    .phone {
+      width: 260px; height: 520px;
+      background: #111; border-radius: 36px;
+      border: 3px solid #2a2a2a;
+      overflow: hidden; position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      flex-shrink: 0;
+    }
+    .phone::before {
+      content: ''; position: absolute;
+      top: 10px; left: 50%; transform: translateX(-50%);
+      width: 50px; height: 5px;
+      background: #2a2a2a; border-radius: 100px; z-index: 10;
+    }
+    .screen {
+      width: 100%; height: 100%;
+      display: flex; overflow: hidden;
+      border-radius: 33px;
+    }
+
+    /* ===== SIDEBAR MINI ===== */
+    .m-sidebar {
+      width: 48px; flex-shrink: 0;
+      background: linear-gradient(160deg, #1F6F78, #2E8A99);
+      display: flex; flex-direction: column;
+      align-items: center; padding: 14px 0; gap: 14px;
+    }
+    .m-sidebar .s-logo { color: #F4A261; font-size: 0.9rem; }
+    .m-sidebar .s-nav { display: flex; flex-direction: column; gap: 5px; }
+    .s-item {
+      width: 32px; height: 32px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.55); font-size: 0.7rem; cursor: pointer;
+    }
+    .s-item.on { background: #fff; color: #1F6F78; }
+    .s-item.on i { color: #F4A261; }
+
+    /* ===== MAIN AREA ===== */
+    .m-main { flex: 1; background: #F7FAFA; padding: 14px 10px; overflow: hidden; display: flex; flex-direction: column; }
+    .m-title { font-size: 0.72rem; font-weight: 700; color: #1F6F78; }
+    .m-sub   { font-size: 0.48rem; color: #aaa; margin-bottom: 10px; }
+
+    /* ===== SCREEN: LOGIN ===== */
+    .scr-login {
+      background: linear-gradient(135deg, #F7FAFA, #D4ECEE);
+      align-items: center; justify-content: center;
+    }
+    .login-box {
+      background: #fff; border-radius: 18px;
+      padding: 22px 18px; width: 200px; text-align: center;
+      box-shadow: 0 8px 30px rgba(31,111,120,0.12);
+    }
+    .login-box .ll { display: flex; align-items: center; justify-content: center; gap: 5px; color: #1F6F78; font-size: 0.9rem; font-weight: 700; margin-bottom: 3px; }
+    .login-box .ll i { color: #F4A261; }
+    .login-box .lt { font-size: 0.52rem; color: #aaa; margin-bottom: 14px; }
+    .login-box .li { width: 100%; padding: 7px 9px; border: 1.5px solid #E0E0E0; border-radius: 7px; font-size: 0.58rem; background: #F7FAFA; margin-bottom: 8px; font-family: 'Poppins', sans-serif; color: #444; }
+    .login-box .lb { width: 100%; padding: 8px; background: linear-gradient(135deg, #F4A261, #e8894a); color: #fff; border: none; border-radius: 7px; font-size: 0.6rem; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
+
+    /* ===== SCREEN: DASHBOARD ===== */
+    .sum-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; margin-bottom: 7px; }
+    .sum-card {
+      background: #fff; border-radius: 7px; padding: 6px 5px;
+      display: flex; align-items: center; gap: 4px;
+      border: 1px solid #E0E0E0;
+    }
+    .sc-icon { width: 20px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; flex-shrink: 0; }
+    .sc-saldo  .sc-icon { background: #E6F4F5; color: #1F6F78; }
+    .sc-masuk  .sc-icon { background: #E8F8EF; color: #2E9E6B; }
+    .sc-keluar .sc-icon { background: #FEF0E6; color: #F4A261; }
+    .sc-lbl { font-size: 0.35rem; color: #aaa; }
+    .sc-val { font-size: 0.46rem; font-weight: 700; color: #2C2C2C; }
+    .dash-bot { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .d-box { background: #fff; border-radius: 7px; padding: 7px; border: 1px solid #E0E0E0; }
+    .d-box-title { font-size: 0.42rem; font-weight: 600; color: #1F6F78; margin-bottom: 5px; }
+    .d-box-title i { color: #F4A261; }
+    .chart-wrap { display: flex; align-items: center; justify-content: center; height: 58px; }
+    .ins-item { background: #F7FAFA; border-radius: 4px; padding: 3px 5px; font-size: 0.36rem; color: #555; border-left: 2px solid #2E8A99; margin-bottom: 3px; }
+
+    /* ===== SCREEN: TAMBAH ===== */
+    .form-box { background: #fff; border-radius: 9px; padding: 10px; border: 1px solid #E0E0E0; }
+    .f-toggle { display: flex; gap: 4px; margin-bottom: 7px; }
+    .f-tbtn {
+      flex: 1; padding: 5px; border-radius: 6px;
+      font-size: 0.48rem; font-weight: 600;
+      border: 1.5px solid #E0E0E0; background: #F7FAFA; color: #aaa;
+      font-family: 'Poppins', sans-serif; cursor: pointer;
+    }
+    .f-tbtn.on { background: #1F6F78; border-color: #1F6F78; color: #fff; }
+    .f-lbl { font-size: 0.42rem; color: #666; font-weight: 600; margin-bottom: 2px; }
+    .f-inp {
+      width: 100%; padding: 5px 7px; border: 1.5px solid #E0E0E0;
+      border-radius: 6px; font-size: 0.48rem; background: #F7FAFA;
+      margin-bottom: 6px; font-family: 'Poppins', sans-serif; color: #444;
+    }
+    .f-submit {
+      width: 100%; padding: 7px;
+      background: linear-gradient(135deg, #F4A261, #e8894a);
+      color: #fff; border: none; border-radius: 7px;
+      font-size: 0.52rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer; margin-top: 2px;
+    }
+
+    /* ===== SCREEN: TRANSAKSI ===== */
+    .trx-filter { display: flex; gap: 4px; margin-bottom: 7px; }
+    .trx-filter select {
+      flex: 1; padding: 4px 5px; border: 1.5px solid #E0E0E0;
+      border-radius: 6px; font-size: 0.42rem; background: #fff;
+      font-family: 'Poppins', sans-serif; color: #444;
+    }
+    .trx-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 7px; border-radius: 7px; background: #F7FAFA; margin-bottom: 4px;
+    }
+    .trx-left { display: flex; align-items: center; gap: 5px; }
+    .trx-ico { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; flex-shrink: 0; }
+    .trx-ico.in  { background: #E8F8EF; color: #2E9E6B; }
+    .trx-ico.out { background: #FEF0E6; color: #F4A261; }
+    .trx-kat  { font-size: 0.48rem; font-weight: 600; color: #2C2C2C; }
+    .trx-meta { font-size: 0.36rem; color: #aaa; }
+    .trx-right { display: flex; align-items: center; gap: 5px; }
+    .trx-jml { font-size: 0.48rem; font-weight: 700; }
+    .trx-jml.in  { color: #2E9E6B; }
+    .trx-jml.out { color: #F4A261; }
+    .trx-del { font-size: 0.42rem; color: #ccc; }
+
+    /* ===== SCREEN: TARGET ===== */
+    .tgt-box { background: #fff; border-radius: 9px; padding: 10px; border: 1px solid #E0E0E0; }
+    .tgt-row { display: flex; gap: 4px; margin-bottom: 9px; }
+    .tgt-inp {
+      flex: 1; padding: 5px 7px; border: 1.5px solid #E0E0E0;
+      border-radius: 6px; font-size: 0.48rem; background: #F7FAFA;
+      font-family: 'Poppins', sans-serif; color: #444;
+    }
+    .tgt-btn {
+      padding: 5px 9px; background: linear-gradient(135deg, #F4A261, #e8894a);
+      color: #fff; border: none; border-radius: 6px;
+      font-size: 0.46rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer; white-space: nowrap;
+    }
+    .tgt-info { display: flex; justify-content: space-between; font-size: 0.4rem; color: #aaa; margin-bottom: 5px; }
+    .tgt-bar-wrap { height: 7px; background: #E6F4F5; border-radius: 100px; overflow: hidden; margin-bottom: 3px; }
+    .tgt-bar-fill { height: 100%; background: linear-gradient(90deg, #F4A261, #1F6F78); border-radius: 100px; width: 65%; }
+    .tgt-pct { font-size: 0.4rem; color: #aaa; text-align: right; margin-bottom: 7px; }
+    .tgt-sisa { font-size: 0.42rem; padding: 4px 7px; background: #F7FAFA; border: 1px solid #E0E0E0; border-radius: 5px; color: #7A7A7A; margin-bottom: 5px; }
+    .tgt-msg  { font-size: 0.42rem; padding: 5px 7px; background: #FEF0E6; border: 1px dashed #F4A261; border-radius: 5px; color: #c97a3a; text-align: center; }
+
+    /* ===== FLOW DIAGRAM ===== */
+    .flow-wrap {
+      width: 100%; max-width: 980px;
+      background: #111; border-radius: 20px;
+      padding: 32px 24px; border: 1px solid #1e1e1e;
+    }
+    .flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px; }
+    .flow-node { display: flex; flex-direction: column; align-items: center; }
+    .flow-box {
+      background: #1a1a1a; border: 1.5px solid #2a2a2a;
+      border-radius: 14px; padding: 14px 16px; text-align: center;
+      min-width: 100px; cursor: default; transition: all 0.2s;
+    }
+    .flow-box:hover { border-color: #2E8A99; background: #1a2e30; }
+    .flow-box.hl { border-color: #F4A261; background: #2a1e10; }
+    .flow-box.hl .fb-title { color: #F4A261; }
+    .fb-icon  { font-size: 1.2rem; margin-bottom: 6px; }
+    .fb-title { font-size: 0.72rem; font-weight: 600; color: #fff; }
+    .fb-desc  { font-size: 0.58rem; color: #555; margin-top: 2px; }
+    .flow-arr { color: #333; font-size: 1.1rem; padding: 0 6px; }
+
+    /* ===== FEATURE GRID ===== */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px; width: 100%; max-width: 980px;
+    }
+    .feat-card {
+      background: #111; border: 1px solid #1e1e1e;
+      border-radius: 16px; padding: 20px; transition: all 0.2s;
+    }
+    .feat-card:hover { border-color: #2E8A99; transform: translateY(-2px); }
+    .fc-icon  { font-size: 1.3rem; margin-bottom: 10px; }
+    .fc-title { font-size: 0.82rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .fc-desc  { font-size: 0.72rem; color: #555; line-height: 1.5; }
+
+    /* ===== PALETTE ===== */
+    .palette { display: flex; gap: 12px; flex-wrap: wrap; width: 100%; max-width: 980px; }
+    .swatch { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .sw-color { width: 52px; height: 52px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); }
+    .sw-name  { font-size: 0.62rem; color: #555; }
+    .sw-hex   { font-size: 0.58rem; color: #3a3a3a; }
+
+    /* ===== FOOTER ===== */
+    .proto-footer { margin-top: 64px; text-align: center; font-size: 0.72rem; color: #333; }
+    .proto-footer a { color: #2E8A99; text-decoration: none; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .phone { width: 230px; height: 460px; }
+      .proto-header h1 { font-size: 1.8rem; }
+      .flow { flex-direction: column; }
+      .flow-arr { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== SCREENS ===== -->
+  <div class="sec-label">Screens Preview</div>
+  <div class="frames">
+
+    <!-- LOGIN -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="screen scr-login">
+          <div class="login-box">
+            <div class="ll"><i class="fa-solid fa-piggy-bank"></i> MoneyMate</div>
+            <div class="lt">Catat keuanganmu dengan mudah 🌸</div>
+            <input class="li" placeholder="Masukkan namamu..." readonly/>
+            <button class="lb"><i class="fa-solid fa-right-to-bracket"></i> Masuk</button>
+          </div>
+        </div>
+      </div>
+      <div class="phone-lbl">Login</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="screen">
+          <div class="m-sidebar">
+            <div class="s-logo"><i class="fa-solid fa-piggy-bank"></i></div>
+            <div class="s-nav">
+              <div class="s-item on"><i class="fa-solid fa-house"></i></div>
+              <div class="s-item"><i class="fa-solid fa-plus-circle"></i></div>
+              <div class="s-item"><i class="fa-solid fa-list"></i></div>
+              <div class="s-item"><i class="fa-solid fa-bullseye"></i></div>
+            </div>
+          </div>
+          <div class="m-main">
+            <div class="m-title">Dashboard</div>
+            <div class="m-sub">Halo, <strong>Tasya</strong> 👋 Semangat!</div>
+            <div class="sum-cards">
+              <div class="sum-card sc-saldo">
+                <div class="sc-icon"><i class="fa-solid fa-wallet"></i></div>
+                <div><div class="sc-lbl">Saldo</div><div class="sc-val">Rp 500k</div></div>
+              </div>
+              <div class="sum-card sc-masuk">
+                <div class="sc-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                <div><div class="sc-lbl">Masuk</div><div class="sc-val">Rp 1jt</div></div>
+              </div>
+              <div class="sum-card sc-keluar">
+                <div class="sc-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                <div><div class="sc-lbl">Keluar</div><div class="sc-val">Rp 500k</div></div>
+              </div>
+            </div>
+            <div class="dash-bot">
+              <div class="d-box">
+                <div class="d-box-title"><i class="fa-solid fa-chart-pie"></i> Kategori</div>
+                <div class="chart-wrap"><canvas id="miniChart" width="70" height="70"></canvas></div>
+              </div>
+              <div class="d-box">
+                <div class="d-box-title"><i class="fa-solid fa-lightbulb"></i> Insight</div>
+                <div class="ins-item">🔥 Terbesar: Makanan</div>
+                <div class="ins-item">✅ Pakai 50% pemasukan</div>
+                <div class="ins-item">📋 5 transaksi tercatat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-lbl">Dashboard</div>
+    </div>
+
+    <!-- TAMBAH TRANSAKSI -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="screen">
+          <div class="m-sidebar">
+            <div class="s-logo"><i class="fa-solid fa-piggy-bank"></i></div>
+            <div class="s-nav">
+              <div class="s-item"><i class="fa-solid fa-house"></i></div>
+              <div class="s-item on"><i class="fa-solid fa-plus-circle"></i></div>
+              <div class="s-item"><i class="fa-solid fa-list"></i></div>
+              <div class="s-item"><i class="fa-solid fa-bullseye"></i></div>
+            </div>
+          </div>
+          <div class="m-main">
+            <div class="m-title">Tambah Transaksi</div>
+            <div class="m-sub">Catat pemasukan / pengeluaran 📝</div>
+            <div class="form-box">
+              <div class="f-toggle">
+                <button class="f-tbtn on"><i class="fa-solid fa-arrow-up"></i> Pemasukan</button>
+                <button class="f-tbtn"><i class="fa-solid fa-arrow-down"></i> Pengeluaran</button>
+              </div>
+              <div class="f-lbl">Jumlah (Rp)</div>
+              <input class="f-inp" placeholder="Contoh: 50000" readonly/>
+              <div class="f-lbl">Kategori</div>
+              <input class="f-inp" placeholder="Pilih kategori..." readonly/>
+              <div class="f-lbl">Tanggal</div>
+              <input class="f-inp" placeholder="2026-04-22" readonly/>
+              <div class="f-lbl">Catatan (opsional)</div>
+              <input class="f-inp" placeholder="Tambahkan catatan..." readonly/>
+              <button class="f-submit"><i class="fa-solid fa-floppy-disk"></i> Simpan Transaksi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-lbl">Tambah Transaksi</div>
+    </div>
+
+    <!-- DATA TRANSAKSI -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="screen">
+          <div class="m-sidebar">
+            <div class="s-logo"><i class="fa-solid fa-piggy-bank"></i></div>
+            <div class="s-nav">
+              <div class="s-item"><i class="fa-solid fa-house"></i></div>
+              <div class="s-item"><i class="fa-solid fa-plus-circle"></i></div>
+              <div class="s-item on"><i class="fa-solid fa-list"></i></div>
+              <div class="s-item"><i class="fa-solid fa-bullseye"></i></div>
+            </div>
+          </div>
+          <div class="m-main">
+            <div class="m-title">Data Transaksi</div>
+            <div class="m-sub">Semua catatan keuangan 📋</div>
+            <div class="trx-filter">
+              <select><option>Semua Jenis</option></select>
+              <select><option>Semua Kategori</option></select>
+            </div>
+            <div class="trx-item">
+              <div class="trx-left">
+                <div class="trx-ico in"><i class="fa-solid fa-arrow-up"></i></div>
+                <div><div class="trx-kat">Gaji</div><div class="trx-meta">22 Apr 2026</div></div>
+              </div>
+              <div class="trx-right">
+                <span class="trx-jml in">+ Rp 1jt</span>
+                <i class="fa-solid fa-trash trx-del"></i>
+              </div>
+            </div>
+            <div class="trx-item">
+              <div class="trx-left">
+                <div class="trx-ico out"><i class="fa-solid fa-arrow-down"></i></div>
+                <div><div class="trx-kat">Makanan</div><div class="trx-meta">21 Apr 2026</div></div>
+              </div>
+              <div class="trx-right">
+                <span class="trx-jml out">- Rp 50k</span>
+                <i class="fa-solid fa-trash trx-del"></i>
+              </div>
+            </div>
+            <div class="trx-item">
+              <div class="trx-left">
+                <div class="trx-ico out"><i class="fa-solid fa-arrow-down"></i></div>
+                <div><div class="trx-kat">Transport</div><div class="trx-meta">20 Apr 2026</div></div>
+              </div>
+              <div class="trx-right">
+                <span class="trx-jml out">- Rp 30k</span>
+                <i class="fa-solid fa-trash trx-del"></i>
+              </div>
+            </div>
+            <div class="trx-item">
+              <div class="trx-left">
+                <div class="trx-ico out"><i class="fa-solid fa-arrow-down"></i></div>
+                <div><div class="trx-kat">Hiburan</div><div class="trx-meta">19 Apr 2026</div></div>
+              </div>
+              <div class="trx-right">
+                <span class="trx-jml out">- Rp 80k</span>
+                <i class="fa-solid fa-trash trx-del"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-lbl">Data Transaksi</div>
+    </div>
+
+    <!-- TARGET TABUNGAN -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="screen">
+          <div class="m-sidebar">
+            <div class="s-logo"><i class="fa-solid fa-piggy-bank"></i></div>
+            <div class="s-nav">
+              <div class="s-item"><i class="fa-solid fa-house"></i></div>
+              <div class="s-item"><i class="fa-solid fa-plus-circle"></i></div>
+              <div class="s-item"><i class="fa-solid fa-list"></i></div>
+              <div class="s-item on"><i class="fa-solid fa-bullseye"></i></div>
+            </div>
+          </div>
+          <div class="m-main">
+            <div class="m-title">Target Tabungan</div>
+            <div class="m-sub">Pantau progress tabungan 🎯</div>
+            <div class="tgt-box">
+              <div class="tgt-row">
+                <input class="tgt-inp" placeholder="Contoh: 1000000" readonly/>
+                <button class="tgt-btn">Set Target</button>
+              </div>
+              <div class="tgt-info">
+                <span>Saldo: <strong>Rp 500k</strong></span>
+                <span>Target: <strong>Rp 750k</strong></span>
+              </div>
+              <div class="tgt-bar-wrap"><div class="tgt-bar-fill"></div></div>
+              <div class="tgt-pct"><span style="color:#1F6F78;font-weight:700;">65%</span> tercapai</div>
+              <div class="tgt-sisa">Sisa yang harus ditabung: Rp 250.000</div>
+              <div class="tgt-msg">🔥 Semangat! Target kamu hampir tercapai (65%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-lbl">Target Tabungan</div>
+    </div>
+
+  </div><!-- /frames -->
+
+  <!-- ===== ALUR APLIKASI ===== -->
+  <div class="sec-label">Alur Aplikasi</div>
+  <div class="flow-wrap">
+    <div class="flow">
+      <div class="flow-node">
+        <div class="flow-box hl">
+          <div class="fb-icon">🚀</div>
+          <div class="fb-title">Buka App</div>
+          <div class="fb-desc">index.html</div>
+        </div>
+      </div>
+      <div class="flow-arr"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-node">
+        <div class="flow-box">
+          <div class="fb-icon">🔍</div>
+          <div class="fb-title">Cek Login</div>
+          <div class="fb-desc">localStorage</div>
+        </div>
+      </div>
+      <div class="flow-arr"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-node">
+        <div class="flow-box">
+          <div class="fb-icon">👤</div>
+          <div class="fb-title">Login</div>
+          <div class="fb-desc">Input nama</div>
+        </div>
+      </div>
+      <div class="flow-arr"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-node">
+        <div class="flow-box hl">
+          <div class="fb-icon">🏠</div>
+          <div class="fb-title">Dashboard</div>
+          <div class="fb-desc">Ringkasan</div>
+        </div>
+      </div>
+      <div class="flow-arr"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-node">
+        <div class="flow-box">
+          <div class="fb-icon">➕</div>
+          <div class="fb-title">Tambah</div>
+          <div class="fb-desc">Transaksi</div>
+        </div>
+      </div>
+      <div class="flow-arr"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-node">
+        <div class="flow-box">
+          <div class="fb-icon">📋</div>
+          <div class="fb-title">Data</div>
+          <div class="fb-desc">Riwayat</div>
+        </div>
+      </div>
+      <div class="flow-arr"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-node">
+        <div class="flow-box">
+          <div class="fb-icon">🎯</div>
+          <div class="fb-title">Target</div>
+          <div class="fb-desc">Tabungan</div>
+        </div>
+      </div>
+      <div class="flow-arr"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="flow-node">
+        <div class="flow-box hl">
+          <div class="fb-icon">🚪</div>
+          <div class="fb-title">Logout</div>
+          <div class="fb-desc">Hapus sesi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FITUR ===== -->
+  <div class="sec-label">Fitur Utama</div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="fc-icon">👤</div>
+      <div class="fc-title">Multi User Login</div>
+      <div class="fc-desc">Login pakai nama, data tersimpan per user di localStorage. Tidak perlu backend.</div>
+    </div>
+    <div class="feat-card">
+      <div class="fc-icon">💰</div>
+      <div class="fc-title">Catat Transaksi</div>
+      <div class="fc-desc">Input pemasukan dan pengeluaran dengan kategori, tanggal, dan catatan opsional.</div>
+    </div>
+    <div class="feat-card">
+      <div class="fc-icon">📊</div>
+      <div class="fc-title">Grafik Kategori</div>
+      <div class="fc-desc">Donut chart pengeluaran per kategori menggunakan Chart.js yang ringan.</div>
+    </div>
+    <div class="feat-card">
+      <div class="fc-icon">💡</div>
+      <div class="fc-title">Insight Otomatis</div>
+      <div class="fc-desc">Analisis kategori terbesar, rasio pengeluaran, dan status saldo secara otomatis.</div>
+    </div>
+    <div class="feat-card">
+      <div class="fc-icon">🎯</div>
+      <div class="fc-title">Target Tabungan</div>
+      <div class="fc-desc">Set target nominal, pantau progress bar, dan dapatkan pesan motivasi dinamis.</div>
+    </div>
+    <div class="feat-card">
+      <div class="fc-icon">📱</div>
+      <div class="fc-title">Responsif</div>
+      <div class="fc-desc">Sidebar jadi bottom nav di HP kecil. Cocok untuk GitHub Pages dan WebView Kodular.</div>
+    </div>
+  </div>
+
+  <!-- ===== COLOR PALETTE ===== -->
+  <div class="sec-label">Color Palette</div>
+  <div class="palette">
+    <div class="swatch"><div class="sw-color" style="background:#1F6F78;"></div><div class="sw-name">Primary</div><div class="sw-hex">#1F6F78</div></div>
+    <div class="swatch"><div class="sw-color" style="background:#2E8A99;"></div><div class="sw-name">Secondary</div><div class="sw-hex">#2E8A99</div></div>
+    <div class="swatch"><div class="sw-color" style="background:#F4A261;"></div><div class="sw-name">Accent</div><div class="sw-hex">#F4A261</div></div>
+    <div class="swatch"><div class="sw-color" style="background:#F7FAFA;border:1px solid #222;"></div><div class="sw-name">Background</div><div class="sw-hex">#F7FAFA</div></div>
+    <div class="swatch"><div class="sw-color" style="background:#2E9E6B;"></div><div class="sw-name">Pemasukan</div><div class="sw-hex">#2E9E6B</div></div>
+    <div class="swatch"><div class="sw-color" style="background:#E0E0E0;"></div><div class="sw-name">Border</div><div class="sw-hex">#E0E0E0</div></div>
+    <div class="swatch"><div class="sw-color" style="background:#2C2C2C;"></div><div class="sw-name">Text</div><div class="sw-hex">#2C2C2C</div></div>
+    <div class="swatch"><div class="sw-color" style="background:#7A7A7A;"></div><div class="sw-name">Text 2</div><div class="sw-hex">#7A7A7A</div></div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="proto-footer">
+    MoneyMate Prototype &mdash; <a href="index.html">Buka Aplikasi</a>
+  </div>
+
+  <script>
+    // Mini donut chart untuk preview dashboard di prototype
+    const ctx = document.getElementById('miniChart');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Makanan','Transport','Hiburan','Lainnya'],
+          datasets: [{
+            data: [40, 20, 25, 15],
+            backgroundColor: ['#F4A261','#2E8A99','#1F6F78','#E6F4F5'],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          cutout: '65%'
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
