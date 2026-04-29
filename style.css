@@ -779,6 +779,8 @@ body {
 }
 
 /* ---- RESPONSIVE ---- */
+
+/* ---- Tablet (max 900px): sidebar menyempit jadi icon only ---- */
 @media (max-width: 900px) {
   .sidebar {
     width: 70px;
@@ -797,7 +799,121 @@ body {
   .login-card { margin: 16px; padding: 32px 24px; }
 }
 
+/* ---- HP (max 600px): layout umum ---- */
 @media (max-width: 600px) {
-  .main-content { padding: 20px 16px; }
+  .main-content {
+    padding: 20px 14px;
+    /* Beri ruang bawah untuk bottom nav */
+    padding-bottom: 80px;
+  }
   .summary-cards { grid-template-columns: 1fr; }
+  .form-card,
+  .target-card {
+    padding: 20px 16px;
+    max-width: 100%;
+  }
+  .page-header h1 { font-size: 1.35rem; }
+  .card-value { font-size: 1rem; }
+  /* Filter bar wrap ke bawah jika tidak muat */
+  .filter-bar { flex-wrap: wrap; }
+  .filter-bar select { flex: 1 1 calc(50% - 6px); min-width: 120px; }
+  /* Target info stack ke bawah di HP kecil */
+  .target-info { flex-direction: column; gap: 4px; }
+  /* Toast tidak keluar layar */
+  .toast { right: 14px; left: 14px; text-align: center; }
+}
+
+/* ---- HP kecil (max 480px): sidebar jadi bottom navigation ---- */
+@media (max-width: 480px) {
+  /* Sembunyikan sidebar kiri */
+  .sidebar {
+    width: 100%;
+    height: 60px;
+    min-height: unset;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+    gap: 0;
+    box-shadow: 0 -2px 16px rgba(31, 111, 120, 0.15);
+  }
+
+  /* Sembunyikan logo & logout di bottom nav */
+  .sidebar-logo { display: none; }
+  .btn-logout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 10px;
+    background: none;
+    border: none;
+    width: auto;
+    margin-top: 0;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.75);
+  }
+  .btn-logout i { width: auto; font-size: 1.1rem; }
+  .btn-logout span { display: block; font-size: 0.6rem; }
+
+  /* Nav item jadi kolom ikon + label kecil */
+  .sidebar-nav {
+    flex-direction: row;
+    gap: 0;
+    flex: 1;
+    justify-content: space-around;
+  }
+  .nav-item {
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 0.6rem !important;
+    color: rgba(255,255,255,0.75);
+  }
+  .nav-item i { font-size: 1.1rem !important; width: auto; margin: 0; }
+  /* Tampilkan label teks kecil di bawah ikon */
+  .nav-item::after { font-size: 0.6rem; }
+  .nav-item[data-page="dashboard"]::after  { content: "Home"; }
+  .nav-item[data-page="tambah"]::after     { content: "Tambah"; }
+  .nav-item[data-page="transaksi"]::after  { content: "Data"; }
+  .nav-item[data-page="target"]::after     { content: "Target"; }
+  .nav-item.active {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    box-shadow: none;
+  }
+  .nav-item.active i { color: #F4A261; }
+
+  /* Konten full width tanpa margin kiri */
+  .main-content {
+    margin-left: 0;
+    max-width: 100%;
+    padding: 16px 12px 76px;
+  }
+
+  /* Summary cards 1 kolom */
+  .summary-cards { grid-template-columns: 1fr; gap: 12px; }
+  .dashboard-bottom { grid-template-columns: 1fr; gap: 12px; }
+
+  /* Card lebih compact */
+  .card { padding: 16px 14px; }
+  .card-icon { width: 44px; height: 44px; font-size: 1.1rem; }
+
+  /* Form & target full width */
+  .form-card, .target-card { max-width: 100%; padding: 18px 14px; }
+
+  /* Transaksi item: jumlah tidak terpotong */
+  .transaksi-item { padding: 12px; gap: 8px; }
+  .transaksi-jumlah { font-size: 0.82rem; }
+  .transaksi-kategori { font-size: 0.82rem; }
+
+  /* Login card full width di HP kecil */
+  .login-card { margin: 12px; padding: 28px 18px; border-radius: 20px; }
+  .login-logo { font-size: 1.4rem; }
 }
